@@ -1,16 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>Terminal</title>
-    <link rel="stylesheet" href="node_modules/xterm/css/xterm.css">
+    <link rel="stylesheet" href="node_modules/xterm/css/xterm.css"/>
+    <title>TERMINAL</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-<div id="term"></div>
+<div id="terminal"></div>
 <script>
-    const xterm = require('xterm')
-    const term = new xterm.Terminal()
-    term.open(document.querySelector('#term'))
+    const {Terminal} = require('xterm')
+    const pty = require('node-pty')
+    const os = require("os")
+    const shell = process.env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL']
+    const ptyProcess = pty.spawn(shell, [], {
+        name: 'xterm-color',
+        cols: 100,
+        rows: 30,
+        cwd: process.cwd(),
+        env: process.env,
+    })
+    const term = new Terminal({
+        cursorBlink: true,
+        rows: 30,
+        cols: 100,
+        fontFamily: "Ubuntu Mono derivative Powerline"
+    })
+
+    term.open(document.getElementById('terminal'))
+    term.onData(e => {
+        ptyProcess.write(e)
+    })
+    ptyProcess.onData(e => {
+        term.write(e)
+    })
 </script>
 </body>
 </html>
