@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "electron": "^11.2.3"
+    "electron": "^11.2.3",
+    "xterm": "^4.10.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.27",
